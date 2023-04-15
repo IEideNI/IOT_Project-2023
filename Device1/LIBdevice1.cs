@@ -73,7 +73,8 @@ namespace Device
             await deviceClient.SetMethodDefaultHandlerAsync(DefaultServiceHandler, deviceClient);
             await deviceClient.SetMethodHandlerAsync("SendMessages", SendMessagesHandler, deviceClient);
             await deviceClient.SetDesiredPropertyUpdateCallbackAsync(OnDesirePropertyChanged, deviceClient);
-            await deviceClient.SetMethodHandlerAsync("ChangeProdRate", UpdateProductionRate, deviceClient);
+            await deviceClient.SetMethodHandlerAsync("ChangeProdRateUP", UpdateProductionRateup, deviceClient);
+            await deviceClient.SetMethodHandlerAsync("ChangeProdRateDOWN", UpdateProductionRatedown, deviceClient);
             await deviceClient.SetMethodHandlerAsync("EmergencyStop", EmergencyStop, deviceClient);
             await deviceClient.SetMethodHandlerAsync("ClearErrors", ResetErrors, deviceClient);
         }
@@ -128,7 +129,21 @@ namespace Device
             await deviceClient.UpdateReportedPropertiesAsync(reportedProperties);
 
         }
-        private async Task<MethodResponse> UpdateProductionRate(MethodRequest methodRequest, object userContext)
+        private async Task<MethodResponse> UpdateProductionRateup(MethodRequest methodRequest, object userContext)
+        {
+            var client = new OpcClient("opc.tcp://localhost:4840/");
+            client.Connect();
+
+            var ProdRate = new OpcReadNode("ns=2;s=Device 1/ProductionRate");
+            var tempProdRateVal = client.ReadNode(ProdRate);
+            int FinalProdRateChange = ((int)(tempProdRateVal.As<float>() + 10));
+            client.WriteNode("ns=2;s=Device 1/ProductionRate", FinalProdRateChange);
+
+            client.Disconnect();
+            return new MethodResponse(0);
+        }
+
+        private async Task<MethodResponse> UpdateProductionRatedown(MethodRequest methodRequest, object userContext)
         {
             var client = new OpcClient("opc.tcp://localhost:4840/");
             client.Connect();
