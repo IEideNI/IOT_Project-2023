@@ -16,6 +16,8 @@ x64/
 TEMP/
 ConnectionString.txt
 CertificateStores/
+ConnectionOpcUa.txt
+DeviceName.txt
 
 
 # MSTest test Results
