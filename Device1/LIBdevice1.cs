@@ -46,9 +46,9 @@ namespace Device
             var BadCountCalculateNode = new OpcReadNode($"ns=2;s={DeviceName}/BadCount");
             int GoodCountCalculate = client.ReadNode(GoodCountCalculateNode).As<int>();
             int BadCountCalculate = client.ReadNode(GoodCountCalculateNode).As<int>();
-            if (GoodCountCalculate + BadCountCalculate > 1000)
+            if (GoodCountCalculate + BadCountCalculate > 100)
             {
-                if ((GoodCountCalculate + BadCountCalculate) * 0.5f > GoodCountCalculate)
+                if ((GoodCountCalculate + BadCountCalculate) * 0.85f > GoodCountCalculate)
                 {
                     Console.WriteLine("Poor Production, Reducing Production Rate =()");
                     await Task.Delay(1000);
