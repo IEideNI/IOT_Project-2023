@@ -37,7 +37,6 @@ namespace Device
                 Temperature = client.ReadNode($"ns=2;s={DeviceName}/Temperature").Value,
                 GoodCount = client.ReadNode($"ns=2;s={DeviceName}/GoodCount").Value,
                 BadCount = client.ReadNode($"ns=2;s={DeviceName}/BadCount").Value,
-                //ProductionRate = client.ReadNode($"ns=2;s=Device 1/ProductionRate").Value,
             };
 
 
@@ -46,9 +45,9 @@ namespace Device
             var BadCountCalculateNode = new OpcReadNode($"ns=2;s={DeviceName}/BadCount");
             int GoodCountCalculate = client.ReadNode(GoodCountCalculateNode).As<int>();
             int BadCountCalculate = client.ReadNode(GoodCountCalculateNode).As<int>();
-            if (GoodCountCalculate + BadCountCalculate > 1000)
+            if (GoodCountCalculate + BadCountCalculate > 100)
             {
-                if ((GoodCountCalculate + BadCountCalculate) * 0.5f > GoodCountCalculate)
+                if ((GoodCountCalculate + BadCountCalculate) * 0.85f > GoodCountCalculate)
                 {
                     Console.WriteLine("Poor Production, Reducing Production Rate =()");
                     await Task.Delay(1000);
@@ -198,33 +197,8 @@ namespace Device
             await deviceClient.SetMethodHandlerAsync("ChangeProdRateDOWN", UpdateProductionRatedown, deviceClient);
             await deviceClient.SetMethodHandlerAsync("EmergencyStop", EmergencyStop, deviceClient);
             await deviceClient.SetMethodHandlerAsync("ClearErrors", ResetErrors, deviceClient);
-            await deviceClient.SetMethodHandlerAsync("PowerON", PowerON, deviceClient);
-            await deviceClient.SetMethodHandlerAsync("PowerOFF", PowerOFF, deviceClient);
         }
 
-        private async Task<MethodResponse> PowerON(MethodRequest methodRequest, object userContext)
-        {
-            var client = new OpcClient(OPCstring);
-            client.Connect();
-            await Task.Delay(10);
-            client.WriteNode($"ns=2;s=Device 1/ProductionStatus", 1);
-            Console.WriteLine("Device Run! by SDK");
-            client.Disconnect();
-            return new MethodResponse(0);
-        }
-
-        private async Task<MethodResponse> PowerOFF(MethodRequest methodRequest, object userContext)
-        {
-            var client = new OpcClient(OPCstring);
-            client.Connect();
-            await Task.Delay(10);
-            client.WriteNode($"ns=2;s=Device 1/ProductionStatus", 0);
-            Console.WriteLine(client.ReadNode("ns=2;s=Device 1/ProductionStatus"));
-
-            client.Disconnect();
-            Console.WriteLine("Device Stop! by SDK");
-            return new MethodResponse(0);
-        }
 
         private void PrintMessages(Message recievedMessage)
         {
