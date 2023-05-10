@@ -48,6 +48,7 @@ namespace Device
             int BadCountCalculate = client.ReadNode(GoodCountCalculateNode).As<int>();
             if (GoodCountCalculate + BadCountCalculate > 100)
             {
+                /*
                 if ((GoodCountCalculate + BadCountCalculate) * 0.85f > GoodCountCalculate)
                 {
                     Console.WriteLine("Poor Production, Reducing Production Rate =()");
@@ -57,6 +58,7 @@ namespace Device
                     int FinalProdRateChange = ((tempProdRateVal.As<int>() - 10));
                     client.WriteNode($"ns=2;s={DeviceName}/ProductionRate", FinalProdRateChange);
                 }
+                */
             }
             var ProductionRate = new OpcReadNode($"ns=2;s={DeviceName}/ProductionRate");
             var DeviceError = new OpcReadNode($"ns=2;s={DeviceName}/DeviceError");

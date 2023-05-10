@@ -35,7 +35,7 @@ namespace serviceSDK
         public async Task UpdateDesiredTwin(string deviceId, string propertyName, dynamic propertyValue)
         {
             var twin = await registry.GetTwinAsync(deviceId);
-            twin.Properties.Desired[propertyName] = propertyName;
+            twin.Properties.Desired[propertyName] = propertyValue;
             await registry.UpdateTwinAsync(twin.DeviceId, twin, twin.ETag);
         }
 
@@ -55,8 +55,9 @@ namespace serviceSDKConsole
             3-Direct Method-> Send Message
             4-Direct Method-> Emergency STOP
             5-Direct Method-> Reset Errors
-            6- Increase Production Rate
-            7- Decrease Production Rate
+            6- Increase Production Rate by 10
+            7- Decrease Production Rate by 10
+            8- Set Production Rate
             0- Exit"
             );
         }
@@ -171,6 +172,20 @@ namespace serviceSDKConsole
                             Console.WriteLine("Device not connected");
                         }
                         */
+                    }
+                    break;
+                case 8:
+                    {
+                        Console.WriteLine("daj ID dewajsa i kliknij enter");
+                        string deviceID = System.Console.ReadLine() ?? string.Empty;
+                        Console.WriteLine("Podaj nazwe property:");
+                        string propertyName = System.Console.ReadLine() ?? string.Empty;
+
+                        Console.WriteLine("Podaj wartosc property:");
+                        string propertyValue = System.Console.ReadLine() ?? string.Empty;
+
+                        await manager.UpdateDesiredTwin(deviceID, propertyName, propertyValue);
+
                     }
                     break;
                 default:
